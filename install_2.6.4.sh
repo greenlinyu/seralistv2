@@ -1,34 +1,19 @@
 #!/bin/sh
 
-# 设置 GOPATH
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+echo "开始部署 AList v2.6.4（FreeBSD）..."
+chmod +x start.sh
+chmod +x web.js 2>/dev/null
 
-# 安装 go 和 git（如未安装）
-pkg install -y go git wget curl
-
-# 拉取源码
-if [ ! -d "alist-src" ]; then
-    git clone https://github.com/alist-org/alist.git alist-src
-    cd alist-src
-    git checkout v2.6.4
-else
-    cd alist-src
-    git checkout v2.6.4
+# 安装 Node 依赖
+if ! [ -d "node_modules" ]; then
+    echo "安装 Node 模块依赖..."
+    npm install
 fi
 
-# 编译 FreeBSD amd64 可执行文件
-GOOS=freebsd GOARCH=amd64 go build -o alist
+# 启动反代服务
+echo "启动 Node.js 反向代理..."
+nohup node app.js > /dev/null 2>&1 &
 
-# 检查并打包
-if [ -f "alist" ]; then
-    tar -czf alist-freebsd-amd64.tar.gz alist
-    cd ..
-    mkdir -p public_nodejs
-    cp alist-src/alist public_nodejs/web.js
-    cp alist-src/alist-freebsd-amd64.tar.gz public_nodejs/
-    chmod +x public_nodejs/web.js
-    echo "✅ AList v2.6.4 编译完成并部署至 public_nodejs/"
-else
-    echo "❌ 构建失败"
-fi
+# 启动 AList 后端
+echo "启动 AList 后端..."
+./start.sh
