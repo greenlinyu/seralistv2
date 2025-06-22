@@ -1,0 +1,22 @@
+{
+    "name": "example",
+    "version": "1.0.0",
+    "description": "Proxy wrapper for AList v2.6.4 using Express.js",
+    "author": "k0baya",
+    "main": "app.js",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+      "start": "node app.js"
+    },
+    "dependencies": {
+      "express": "^4.19.2",
+      "http-proxy-middleware": "^3.0.0"
+    },
+    "engines": {
+      "node": "22"
+    },
+    "keywords": [
+      "node"
+    ]
+  }
